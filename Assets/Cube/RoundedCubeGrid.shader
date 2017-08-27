@@ -1,4 +1,4 @@
-﻿Shader "Custom/Rounded Cube Grid" 
+﻿Shader "Custom/RoundedCubeGrid" 
 {
 	Properties 
 	{
