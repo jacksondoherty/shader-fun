@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(Rigidbody))]
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class CubeSphere : MonoBehaviour 
 {
 	public int gridSize;
+	public float radius = 1f;
 
 	private Mesh mesh;
 	private Vector3[] vertices;
@@ -20,7 +21,7 @@ public class CubeSphere : MonoBehaviour
 	private void Generate () 
 	{
 		GetComponent<MeshFilter>().mesh = mesh = new Mesh();
-		mesh.name = "Procedural Sphere";
+		mesh.name = "Procedural Cube";
 		CreateVertices ();
 		CreateTriangles ();
 		CreateColliders();
@@ -80,40 +81,28 @@ public class CubeSphere : MonoBehaviour
 		mesh.colors32 = cubeUV;
 	}
 
+	/*
 	private void SetVertex (int i, int x, int y, int z) 
 	{
 		Vector3 v = new Vector3(x, y, z) * 2f / gridSize - Vector3.one;
 		normals[i] = v.normalized;
-		vertices[i] = normals[i];
+		vertices[i] = normals[i] * radius;
+		cubeUV[i] = new Color32((byte)x, (byte)y, (byte)z, 0);
+	}
+	*/
 
-		// make changes on edges
-		if (x < roundness) 
-		{
-			inner.x = roundness;
-		}
-		else if (x > gridSize - roundness) 
-		{
-			inner.x = gridSize - roundness;
-		}
-		if (y < roundness) 
-		{
-			inner.y = roundness;
-		}
-		else if (y > gridSize - roundness) 
-		{
-			inner.y = gridSize - roundness;
-		}
-		if (z < roundness)
-		{
-			inner.z = roundness;
-		}
-		else if (z > gridSize - roundness) 
-		{
-			inner.z = gridSize - roundness;
-		}
-
-		normals[i] = (vertices[i] - inner).normalized;
-		vertices[i] = inner + normals[i] * roundness;
+	private void SetVertex (int i, int x, int y, int z) 
+	{
+		Vector3 v = new Vector3(x, y, z) * 2f / gridSize - Vector3.one;
+		float x2 = v.x * v.x;
+		float y2 = v.y * v.y;
+		float z2 = v.z * v.z;
+		Vector3 s;
+		s.x = v.x * Mathf.Sqrt(1f - y2 / 2f - z2 / 2f + y2 * z2 / 3f);
+		s.y = v.y * Mathf.Sqrt(1f - x2 / 2f - z2 / 2f + x2 * z2 / 3f);
+		s.z = v.z * Mathf.Sqrt(1f - x2 / 2f - y2 / 2f + x2 * y2 / 3f);
+		normals[i] = s;
+		vertices[i] = normals[i] * radius;
 		cubeUV[i] = new Color32((byte)x, (byte)y, (byte)z, 0);
 	}
 
@@ -254,6 +243,6 @@ public class CubeSphere : MonoBehaviour
 	}
 
 	private void CreateColliders () {
-		gameObject.AddComponent<SphereCollider> ();
+		gameObject.AddComponent<SphereCollider>();
 	}
 }
