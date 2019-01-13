@@ -10,7 +10,7 @@ public class MeshDeformer : MonoBehaviour
 
 	Mesh deformingMesh;
 	Vector3[] originalVertices, displacedVertices;
-	Vector3[] vertexVelocities;
+    Vector3[] vertexVelocities;
 
 	// for nonuniformscales,
 	// You could use a 3D vector instead of a single value for the scale. 
